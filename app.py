@@ -32,13 +32,7 @@ from twilio.rest import Client
 
 cred = credentials.Certificate('serviceaccount.json')
 config ={
-    "apiKey": "AIzaSyAQua-q3nsnXRAAOlC13hTY1OWiyQzDQ4o",
-    "authDomain": "fir-yt-a9610.firebaseapp.com",
-    "databaseURL": "https://fir-yt-a9610-default-rtdb.firebaseio.com",
-    "projectId": "fir-yt-a9610",
-    "storageBucket": "fir-yt-a9610.appspot.com",
-    "messagingSenderId": "19282752976",
-    "appId": "1:19282752976:web:7a5c0f3777c66a9a7775d5"
+
 }
 
 firebase_admin.initialize_app(cred, config)
