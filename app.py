@@ -24,7 +24,6 @@ from google.cloud import firestore
 import smtplib
 import ssl
 from email.message import EmailMessage
-from twilio.rest import Client
 
 
 
@@ -214,8 +213,8 @@ class mainscreen(QMainWindow):
         self.model = torch.hub.load('ultralytics/yolov5', 'custom', r'best.pt')
         self.cap = cv2.VideoCapture(0)
         self.cap1 = cv2.VideoCapture(1)
-        # self.cap3 = cv2.VideoCapture(0)
-        # self.cap4 = cv2.VideoCapture(1)
+        self.cap3 = cv2.VideoCapture(0)
+        self.cap4 = cv2.VideoCapture(1)
         # self.cap = cv2.VideoCapture('test.mp4')
         # self.cap1 = cv2.VideoCapture('fire3.mp4')
         # self.cap3 = cv2.VideoCapture('test.mp4')
@@ -316,218 +315,155 @@ class mainscreen(QMainWindow):
 
 
                 #detection for camera 3
-                # image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2RGB)
-                # img2 = Image.fromarray(image2)
-                # # Get the predictions
-                # results2 = self.model(img2)
-                #
-                # # Extract the bounding boxes and labels
-                # boxes2 = results2.xyxy[0].tolist()
-                # labels2 = results2.names[0]
-                # scores2 = results2.xyxy[0][:, 4].tolist()
-                #
-                # # Set the confidence threshold
-                # confidence_threshold = 0.32
-                # # Filter predictions based on confidence score
-                # filtered_boxes2 = []
-                # filtered_labels2 = []
-                # for box2, score2 in zip(boxes2, scores2):
-                #     if score2 > confidence_threshold:
-                #         filtered_boxes2.append(box2)
-                #         filtered_labels2.append(labels2[int(box2[5])])
-                #
-                # # Draw the bounding boxes and labels
-                # draw2 = ImageDraw.Draw(img2)
-                # font2 = ImageFont.truetype("arial.ttf", 20)
-                # for box2, label2 in zip(filtered_boxes2, filtered_labels2):
-                #     xmin2, ymin2, xmax2, ymax2, confidence2, _2 = box2
-                #     label_text2 = f"{label2} {confidence2:.2f}"
-                #     draw2.rectangle([(xmin2, ymin2), (xmax2, ymax2)], outline="red", width=3)
-                #     draw2.text((xmin2, ymin2 - 20), label_text2, font2=font2, fill="red")
-                #
-                # # Convert the PIL Image back to OpenCV format
-                # image3 = cv2.cvtColor(np.array(img2), cv2.COLOR_RGB2BGR)
+                image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2RGB)
+                img2 = Image.fromarray(image2)
+                # Get the predictions
+                results2 = self.model(img2)
+                
+                # Extract the bounding boxes and labels
+                boxes2 = results2.xyxy[0].tolist()
+                labels2 = results2.names[0]
+                scores2 = results2.xyxy[0][:, 4].tolist()
+                
+                # Set the confidence threshold
+                confidence_threshold = 0.32
+                # Filter predictions based on confidence score
+                filtered_boxes2 = []
+                filtered_labels2 = []
+                for box2, score2 in zip(boxes2, scores2):
+                    if score2 > confidence_threshold:
+                        filtered_boxes2.append(box2)
+                        filtered_labels2.append(labels2[int(box2[5])])
+                
+                # Draw the bounding boxes and labels
+                draw2 = ImageDraw.Draw(img2)
+                font2 = ImageFont.truetype("arial.ttf", 20)
+                for box2, label2 in zip(filtered_boxes2, filtered_labels2):
+                    xmin2, ymin2, xmax2, ymax2, confidence2, _2 = box2
+                    label_text2 = f"{label2} {confidence2:.2f}"
+                    draw2.rectangle([(xmin2, ymin2), (xmax2, ymax2)], outline="red", width=3)
+                    draw2.text((xmin2, ymin2 - 20), label_text2, font2=font2, fill="red")
+                
+                # Convert the PIL Image back to OpenCV format
+                image3 = cv2.cvtColor(np.array(img2), cv2.COLOR_RGB2BGR)
 
 
                 #detection for camera 4
-                # image3 = cv2.cvtColor(image3, cv2.COLOR_BGR2RGB)
-                # img3 = Image.fromarray(image3)
-                # # Get the predictions
-                # results3 = self.model(img3)
-                #
-                # # Extract the bounding boxes and labels
-                # boxes3 = results3.xyxy[0].tolist()
-                # labels3 = results3.names[0]
-                # scores3 = results3.xyxy[0][:, 4].tolist()
-                #
-                # # Set the confidence threshold
-                # confidence_threshold = 0.32
-                # # Filter predictions based on confidence score
-                # filtered_boxes3 = []
-                # filtered_labels3 = []
-                # for box3, score3 in zip(boxes3, scores3):
-                #     if score3 > confidence_threshold:
-                #         filtered_boxes3.append(box2)
-                #         filtered_labels3.append(labels3[int(box3[5])])
-                #
-                # # Draw the bounding boxes and labels
-                # draw3 = ImageDraw.Draw(img3)
-                # font3 = ImageFont.truetype("arial.ttf", 20)
-                # for box3, label3 in zip(filtered_boxes3, filtered_labels3):
-                #     xmin3, ymin3, xmax3, ymax3, confidence3, _3 = box3
-                #     label_text3 = f"{label3} {confidence3:.2f}"
-                #     draw3.rectangle([(xmin3, ymin3), (xmax3, ymax3)], outline="red", width=3)
-                #     draw3.text((xmin3, ymin3 - 20), label_text3, font3=font3, fill="red")
-                #
-                # # Convert the PIL Image back to OpenCV format
-                # image3 = cv2.cvtColor(np.array(img3), cv2.COLOR_RGB2BGR)
+                image3 = cv2.cvtColor(image3, cv2.COLOR_BGR2RGB)
+                img3 = Image.fromarray(image3)
+                # Get the predictions
+                results3 = self.model(img3)
+                
+                # Extract the bounding boxes and labels
+                boxes3 = results3.xyxy[0].tolist()
+                labels3 = results3.names[0]
+                scores3 = results3.xyxy[0][:, 4].tolist()
+                
+                # Set the confidence threshold
+                confidence_threshold = 0.32
+                # Filter predictions based on confidence score
+                filtered_boxes3 = []
+                filtered_labels3 = []
+                for box3, score3 in zip(boxes3, scores3):
+                    if score3 > confidence_threshold:
+                        filtered_boxes3.append(box2)
+                        filtered_labels3.append(labels3[int(box3[5])])
+                
+                # Draw the bounding boxes and labels
+                draw3 = ImageDraw.Draw(img3)
+                font3 = ImageFont.truetype("arial.ttf", 20)
+                for box3, label3 in zip(filtered_boxes3, filtered_labels3):
+                    xmin3, ymin3, xmax3, ymax3, confidence3, _3 = box3
+                    label_text3 = f"{label3} {confidence3:.2f}"
+                    draw3.rectangle([(xmin3, ymin3), (xmax3, ymax3)], outline="red", width=3)
+                    draw3.text((xmin3, ymin3 - 20), label_text3, font3=font3, fill="red")
+                
+                # Convert the PIL Image back to OpenCV format
+                image3 = cv2.cvtColor(np.array(img3), cv2.COLOR_RGB2BGR)
 
 
 
 
                 self.displayimage(frame, 1)
                 self.displayimage1(image1, 1)
-                # self.displayimage2(image2, 1)
-                # self.displayimage3(image3, 1)
+                self.displayimage2(image2, 1)
+                self.displayimage3(image3, 1)
 
                 #alert camera 1
-                # if timer > 51:
-                #     timer = 0
-                # elif len(filtered_boxes) != 0:
-                #     timer = timer + 1
-                #     print(timer)
-                #     winsound.Beep(frequency=5000, duration=100)
-                #     if timer == 2:
-                #         print("Fire detected")
-                #         self.alert1()
-                        # try:
-                        #     cv2.imwrite("fire_detected.png", frame)
-                        #     image_blob = bucket.blob('images/image.jpg')
-                        #     image_blob.upload_from_filename('fire_detected.png')
-                        #     image_upload_success = True
-                        # except:
-                        #     image_upload_success = False
-                        #
-                        # if image_upload_success:
-                        # # Generate Twilio call
-                        #     account_sid = "ACa7a2a00a7786dbf21bc24b381dcd874b"
-                        #     auth_token = "fd25cd01a11675a58d4237b90446f41b"
-                        #     client = Client(account_sid, auth_token)
-                        #
-                        #     call = client.calls.create(
-                        #     url="http://demo.twilio.com/docs/voice.xml",
-                        #     to="+923120602251",
-                        #     # to="+923173349258",
-                        #     from_="+12542766116",
-                        #     twiml='<Response><Say voice="Polly.Joanna">Hello, Sir. Kindly check your app. It seems fire has been detected.</Say></Response>'
-                        #     )
-                        #     print(call.sid)
-                        #     print("call generated.")
-
-                #alert camer 2
-                # if timer1 > 51:
-                #     timer1 = 0
-                # elif len(filtered_boxes1) != 0:
-                #     timer1 = timer1 + 1
-                #     print(timer1)
-                #     winsound.Beep(frequency=5000, duration=100)
-                #     if timer1 == 2:
-                #         print("Fire detected in camera 2")
-                #         self.alert1()
-                        # try:
-                        #     cv2.imwrite("fire_detected1.png", frame)
-                        #     image_blob1 = bucket.blob('images/image.jpg')
-                        #     image_blob1.upload_from_filename('fire_detected2.png')
-                        #     image_upload_success1 = True
-                        # except:
-                        #     image_upload_success1 = False
-                        #
-                        # if image_upload_success1:
-                        # # Generate Twilio call
-                        #     account_sid = "ACa7a2a00a7786dbf21bc24b381dcd874b"
-                        #     auth_token = "fd25cd01a11675a58d4237b90446f41b"
-                        #     client = Client(account_sid, auth_token)
-                        #
-                        #     call = client.calls.create(
-                        #     url="http://demo.twilio.com/docs/voice.xml",
-                        #     to="+923120602251",
-                        #     # to="+923173349258",
-                        #     from_="+12542766116",
-                        #     twiml='<Response><Say voice="Polly.Joanna">Hello, Sir. Kindly check your app. It seems fire has been detected.</Say></Response>'
-                        #     )
-                        #     print(call.sid)
-                        #     print("call generated.")
+                if timer > 51:
+                    timer = 0
+                elif len(filtered_boxes) != 0:
+                    timer = timer + 1
+                    print(timer)
+                    winsound.Beep(frequency=5000, duration=100)
+                    if timer == 2:
+                        print("Fire detected")
+                        self.alert1()
+                        try:
+                            cv2.imwrite("fire_detected.png", frame)
+                            image_blob = bucket.blob('images/image.jpg')
+                            image_blob.upload_from_filename('fire_detected.png')
+                            image_upload_success = True
+                        except:
+                            image_upload_success = False
 
 
-                #alert camera 3
-                # if timer2 > 51:
-                #     timer2 = 0
-                # elif len(filtered_boxes2) != 0:
-                #     timer2 = timer2 + 1
-                #     print(timer2)
-                #     winsound.Beep(frequency=5000, duration=100)
-                #     if timer2 == 2:
-                #         print("Fire detected in camera 3")
-                #         self.alert1()
-                        # try:
-                        #     cv2.imwrite("fire_detected2.png", frame)
-                        #     image_blob2 = bucket.blob('images/image.jpg')
-                        #     image_blob2.upload_from_filename('fire_detected2.png')
-                        #     image_upload_success2 = True
-                        # except:
-                        #     image_upload_success2 = False
-                        #
-                        # if image_upload_success2:
-                        # # Generate Twilio call
-                        #     account_sid = "ACa7a2a00a7786dbf21bc24b381dcd874b"
-                        #     auth_token = "fd25cd01a11675a58d4237b90446f41b"
-                        #     client = Client(account_sid, auth_token)
-                        #
-                        #     call = client.calls.create(
-                        #     url="http://demo.twilio.com/docs/voice.xml",
-                        #     to="+923120602251",
-                        #     # to="+923173349258",
-                        #     from_="+12542766116",
-                        #     twiml='<Response><Say voice="Polly.Joanna">Hello, Sir. Kindly check your app. It seems fire has been detected.</Say></Response>'
-                        #     )
-                        #     print(call.sid)
-                        #     print("call generated.")
+                # alert camera 2
+                if timer1 > 51:
+                    timer1 = 0
+                elif len(filtered_boxes1) != 0:
+                    timer1 = timer1 + 1
+                    print(timer1)
+                    winsound.Beep(frequency=5000, duration=100)
+                    if timer1 == 2:
+                        print("Fire detected in camera 2")
+                        self.alert1()
+                        try:
+                            cv2.imwrite("fire_detected1.png", frame)
+                            image_blob1 = bucket.blob('images/image.jpg')
+                            image_blob1.upload_from_filename('fire_detected2.png')
+                            image_upload_success1 = True
+                        except:
+                            image_upload_success1 = False
 
 
-                #alert camera 4
-                # if timer3 > 51:
-                #     timer3 = 0
-                # elif len(filtered_boxes3) != 0:
-                #     timer3 = timer3 + 1
-                #     print(timer3)
-                #     winsound.Beep(frequency=5000, duration=100)
-                #     if timer3 == 2:
-                #         print("Fire detected in camera 4")
-                #         self.alert1()
-                        # try:
-                        #     cv2.imwrite("fire_detected3.png", frame)
-                        #     image_blob3 = bucket.blob('images/image.jpg')
-                        #     image_blob3.upload_from_filename('fire_detected3.png')
-                        #     image_upload_success3 = True
-                        # except:
-                        #     image_upload_success3 = False
-                        #
-                        # if image_upload_success3:
-                        # # Generate Twilio call
-                        #     account_sid = "ACa7a2a00a7786dbf21bc24b381dcd874b"
-                        #     auth_token = "fd25cd01a11675a58d4237b90446f41b"
-                        #     client = Client(account_sid, auth_token)
-                        #
-                        #     call = client.calls.create(
-                        #     url="http://demo.twilio.com/docs/voice.xml",
-                        #     to="+923120602251",
-                        #     # to="+923173349258",
-                        #     from_="+12542766116",
-                        #     twiml='<Response><Say voice="Polly.Joanna">Hello, Sir. Kindly check your app. It seems fire has been detected.</Say></Response>'
-                        #     )
-                        #     print(call.sid)
-                        #     print("call generated.")
 
+                # alert camera 3
+                if timer2 > 51:
+                    timer2 = 0
+                elif len(filtered_boxes2) != 0:
+                    timer2 = timer2 + 1
+                    print(timer2)
+                    winsound.Beep(frequency=5000, duration=100)
+                    if timer2 == 2:
+                        print("Fire detected in camera 3")
+                        self.alert1()
+                        try:
+                            cv2.imwrite("fire_detected2.png", frame)
+                            image_blob2 = bucket.blob('images/image.jpg')
+                            image_blob2.upload_from_filename('fire_detected2.png')
+                            image_upload_success2 = True
+                        except:
+                            image_upload_success2 = False
+
+
+                # alert camera 4
+                if timer3 > 51:
+                    timer3 = 0
+                elif len(filtered_boxes3) != 0:
+                    timer3 = timer3 + 1
+                    print(timer3)
+                    winsound.Beep(frequency=5000, duration=100)
+                    if timer3 == 2:
+                        print("Fire detected in camera 4")
+                        self.alert1()
+                        try:
+                            cv2.imwrite("fire_detected3.png", frame)
+                            image_blob3 = bucket.blob('images/image.jpg')
+                            image_blob3.upload_from_filename('fire_detected3.png')
+                            image_upload_success3 = True
+                        except:
+                            image_upload_success3 = False
 
                 cv2.waitKey(25)
 
@@ -543,216 +479,6 @@ class mainscreen(QMainWindow):
         self.playing = False
 
 
-
-
-
-
-
-# class Home(QMainWindow):
-#     def __init__(self):
-#         super(Home, self).__init__()
-#         loadUi("home01.ui",self)
-#         V = app.desktop().screenGeometry()
-#         h = V.height()
-#         w = V.width()
-#         widget.setGeometry(0, 25, w, h-25)
-#         widget.setMaximumWidth(w)
-#         widget.setMaximumHeight(h-25)
-#         widget.setWindowTitle("Fire Detection")
-#         self.statusButton_3.clicked.connect(self.loginscreen)
-#         self.statusButton.clicked.connect(self.alert1)
-#         self.statusButton_2.clicked.connect(self.main)
-#         self.comboBox.activated.connect(self.clicker)
-#
-#     def clicker(self):
-#         a = self.comboBox.currentText()
-#         print(a)
-#         if a == "1":
-#             self.camer1()
-#         if a == "2":
-#             self.camer2()
-#         if a == "3":
-#             self.camer3()
-#         if a == "4":
-#             self.camer4()
-#
-#
-#     def camer1(self):
-#         cam = camera1()
-#         width = cam.get_width()
-#         height = cam.get_height()
-#         widget3.setFixedWidth(width)
-#         widget3.setFixedHeight(height + 10)
-#         widget3.addWidget(cam)
-#         widget3.setCurrentIndex(widget3.currentIndex() + 1)
-#         widget3.show()
-#
-#     def camer2(self):
-#         cam = camera2()
-#         width = cam.get_width()
-#         height = cam.get_height()
-#         widget3.setFixedWidth(width)
-#         widget3.setFixedHeight(height + 10)
-#         widget3.addWidget(cam)
-#         widget3.setCurrentIndex(widget3.currentIndex() + 1)
-#         widget3.show()
-#
-#     def camer3(self):
-#         cam = camera3()
-#         width = cam.get_width()
-#         height = cam.get_height()
-#         widget3.setFixedWidth(width)
-#         widget3.setFixedHeight(height + 10)
-#         widget3.addWidget(cam)
-#         widget3.setCurrentIndex(widget3.currentIndex() + 1)
-#         widget3.show()
-#
-#     def camer4(self):
-#         cam = camera4()
-#         width = cam.get_width()
-#         height = cam.get_height()
-#         widget3.setFixedWidth(width)
-#         widget3.setFixedHeight(height + 10)
-#         widget3.addWidget(cam)
-#         widget3.setCurrentIndex(widget3.currentIndex() + 1)
-#         widget3.show()
-#
-#
-#     def emergency(self):
-#         emer = emergency_dialog()
-#         widget2.addWidget(emer)
-#         widget2.setFixedWidth(600)
-#         widget2.setFixedHeight(400)
-#         widget2.setCurrentIndex(widget2.currentIndex() + 1)
-#         widget2.show()
-#
-#     def loginscreen(self):
-#         self.playing = False
-#         log = LoginScreen()
-#         widget.addWidget(log)
-#         widget.setFixedHeight(522)
-#         widget.setFixedWidth(800)
-#         widget.setCurrentIndex(widget.currentIndex() + 1)
-#
-#     def alert1(self):
-#         a = alert()
-#         b.addWidget(a)
-#         b.setFixedWidth(600)
-#         b.setFixedHeight(400)
-#         b.setCurrentIndex(b.currentIndex()+1)
-#         b.show()
-#
-#     def main(self):
-#         main = mainscreen()
-#         widget.addWidget(main)
-#         V = app.desktop().screenGeometry()
-#         h = V.height()
-#         w = V.width()
-#         widget.setGeometry(0, 25, w, h-25)
-#         widget.setMaximumWidth(w)
-#         widget.setMaximumHeight(h-25)
-#         widget.setCurrentIndex(widget.currentIndex() + 1)
-#
-#
-#
-#
-#
-# class mainscreen(QMainWindow):
-#     def __init__(self):
-#         super(mainscreen, self).__init__()
-#         loadUi("main_screen.ui", self)
-#         V = app.desktop().screenGeometry()
-#         h = V.height()
-#         w = V.width()
-#         widget.setGeometry(0, 25, w, h - 25)
-#         widget.setMaximumWidth(w)
-#         widget.setMaximumHeight(h - 25)
-#         widget.setWindowTitle("Fire Detection")
-#         self.statusButton_3.clicked.connect(self.loginscreen)
-#         self.statusButton.clicked.connect(self.emergency)
-#         self.statusButton_2.clicked.connect(self.start_video)
-#         self.comboBox.activated.connect(self.clicker)
-#         self.playing = False
-#         self.cap = cv2.VideoCapture('test.mp4')
-#         self.cap1 = cv2.VideoCapture('fire3.mp4')
-#         self.cap3 = cv2.VideoCapture('test.mp4')
-#         self.cap4 = cv2.VideoCapture('fire3.mp4')
-#
-#         self.start_video()  # Automatically start the video
-#
-#     def start_video(self):
-#         self.playing = True
-#         self.play_video()
-#
-#     def play_video(self):
-#         while self.playing:
-#             ret, frame = self.cap.read()
-#             img1, image1 = self.cap1.read()
-#             img2, image2 = self.cap3.read()
-#             img3, image3 = self.cap4.read()
-#             fps = int(self.cap.get(cv2.CAP_PROP_FPS))
-#             print("fps: ", fps)
-#
-#             if ret:
-#                 self.displayimage(frame, 1)
-#                 self.displayimage1(image1, 1)
-#                 self.displayimage2(image2, 1)
-#                 self.displayimage3(image3, 1)
-#                 cv2.waitKey(25)
-#             else:
-#                 self.cap.release()
-#                 self.cap1.release()
-#                 self.cap3.release()
-#                 self.cap4.release()
-#                 cv2.destroyAllWindows()
-#                 break
-#
-#     def stop_video(self):
-#         self.playing = False
-
-
-
-
-    #     super(mainscreen, self).__init__()
-    #     loadUi("main_screen.ui",self)
-    #     V = app.desktop().screenGeometry()
-    #     h = V.height()
-    #     w = V.width()
-    #     widget.setGeometry(0, 25, w, h-25)
-    #     widget.setMaximumWidth(w)
-    #     widget.setMaximumHeight(h-25)
-    #     widget.setWindowTitle("Fire Detection")
-    #     self.statusButton_3.clicked.connect(self.loginscreen)
-    #     self.statusButton.clicked.connect(self.emergency)
-    #     self.statusButton_2.clicked.connect(self.video)
-    #     self.comboBox.activated.connect(self.clicker)
-    #     self.playing = True
-    #     cap = cv2.VideoCapture('test.mp4')
-    #     cap1 = cv2.VideoCapture('fire3.mp4')
-    #     cap3 = cv2.VideoCapture('test.mp4')
-    #     cap4 = cv2.VideoCapture('fire3.mp4')
-    #
-    #     while self.playing:
-    #         ret, frame = cap.read()
-    #         img1, image1 = cap1.read()
-    #         img2, image2 = cap3.read()
-    #         img3, image3 = cap4.read()
-    #         fps = int(cap.get(cv2.CAP_PROP_FPS))
-    #         print("fps: ", fps)
-    #
-    #         if ret:
-    #             self.displayimage(frame, 1)
-    #             self.displayimage1(image1, 1)
-    #             self.displayimage2(image2, 1)
-    #             self.displayimage3(image3, 1)
-    #
-    #
-    #             cv2.waitKey(25)
-    #         else:
-    #             self.playing = False
-    #
-    #     cap.release()
-    #     cv2.destroyAllWindows()
 
     def clicker(self):
         a = self.comboBox.currentText()
@@ -810,90 +536,6 @@ class mainscreen(QMainWindow):
         widget3.addWidget(cam)
         widget3.setCurrentIndex(widget3.currentIndex() + 1)
         widget3.show()
-
-
-
-    # def video(self):
-    #     timer = 0
-    #     model = torch.hub.load('ultralytics/yolov5', 'custom', r'best.pt')
-    #     cam = True # True for webcam
-    #     if cam:
-    #         cap = cv2.VideoCapture(0)
-    #     else:
-    #         cap = cv2.VideoCapture('test.mp4')
-    #     cap1 = cv2.VideoCapture(1)
-    #         # cap2 = cv2.VideoCapture(2)
-    #         # self.closeEvent = self.closeEventOverride
-    #         # cap1 = cv2.VideoCapture('fire3.mp4')
-    #         # cap2 = cv2.VideoCapture("fire2.mp4")
-    #         # cap3 = cv2.VideoCapture('fire4.mp4')
-    #         # cap4 = cv2.VideoCapture('newsmoke1.mp4')
-    #         # cap5 = cv2.VideoCapture("newsmoke2.mp4")
-    #     count = 0
-    #     while self.playing:
-    #         ret, frame = cap.read()
-    #         img1, image1 = cap1.read()
-    #         fps = int(cap.get(cv2.CAP_PROP_FPS))
-    #         print("fps: ", fps)
-    #
-    #         if ret:
-    #             count += 1
-    #             if count % 5 != 0:
-    #                 continue
-    #
-    #             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    #             img = Image.fromarray(frame)
-    #
-    #             # Get the predictions
-    #             results = model(img)
-    #
-    #             # Extract the bounding boxes and labels
-    #             boxes = results.xyxy[0].tolist()
-    #             labels = results.names[0]
-    #             scores = results.xyxy[0][:, 4].tolist()
-    #
-    #             # Set the confidence threshold
-    #             confidence_threshold = 0.25
-    #
-    #             # Filter predictions based on confidence score
-    #             filtered_boxes = []
-    #             filtered_labels = []
-    #             for box, score in zip(boxes, scores):
-    #                 if score > confidence_threshold:
-    #                     filtered_boxes.append(box)
-    #                     filtered_labels.append(labels[int(box[5])])
-    #
-    #             # Draw the bounding boxes and labels
-    #             draw = ImageDraw.Draw(img)
-    #             font = ImageFont.truetype("arial.ttf", 20)
-    #             for box, label in zip(filtered_boxes, filtered_labels):
-    #                 xmin, ymin, xmax, ymax, confidence, _ = box
-    #                 label_text = f"{label} {confidence:.2f}"
-    #                 draw.rectangle([(xmin, ymin), (xmax, ymax)], outline="red", width=3)
-    #                 draw.text((xmin, ymin - 20), label_text, font=font, fill="red")
-    #
-    #             # Convert the PIL Image back to OpenCV format
-    #             frame = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
-    #             self.displayimage(frame, 1)
-    #             self.displayimage1(image1, 1)
-    #
-    #             if timer > 51:
-    #                 timer = 0
-    #             elif len(filtered_boxes) != 0:
-    #                 timer = timer + 1
-    #                 print(timer)
-    #                 winsound.Beep(frequency=5000, duration=100)
-    #                 if timer == 1:
-    #                     print("Fire detected")
-    #                     self.alert1()
-    #
-    #             cv2.waitKey(25)
-    #         else:
-    #             self.playing = False
-    #
-    #     cap.release()
-    #     cv2.destroyAllWindows()
-
 
     def displayimage(self, img, window = 1):
         qformat = QImage.Format_Indexed8
@@ -968,25 +610,12 @@ class mainscreen(QMainWindow):
         b.setCurrentIndex(b.currentIndex()+1)
         b.show()
 
-
-
     def home(self):
         self.hide()
         self.playing = False
         home_screen = Home()
         widget.addWidget(home_screen)
         widget.setCurrentIndex(widget.currentIndex() + 1)
-        # main = Home()
-        # widget.addWidget(main)
-        # V = app.desktop().screenGeometry()
-        # h = V.height()
-        # w = V.width()
-        # widget.setGeometry(0, 25, w, h-25)
-        # widget.setMaximumWidth(w)
-        # widget.setMaximumHeight(h-25)
-        # widget.setCurrentIndex(widget.currentIndex() + 1)
-
-
 
 
 class alert(QDialog):
